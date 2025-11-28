@@ -1,0 +1,7 @@
+body { font-family: Inter, Roboto, Arial, sans-serif; width: 360px; margin:0; padding:12px; background:#fff; color:#0E2A47; }
+h3 { margin:0 0 8px 0; font-size:16px; }
+.buttons { display:flex; gap:8px; margin-bottom:10px; }
+button { flex:1; padding:8px; border-radius:8px; border:none; background:#0E2A47; color:white; cursor:pointer; }
+#status { font-size:13px; color:#333; margin-bottom:8px; min-height:18px; }
+#results .item { border-top:1px solid #eee; padding:8px 0; }
+.footer { display:block; margin-top:10px; color:#6c7a86; font-size:11px; }

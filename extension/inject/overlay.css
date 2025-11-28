@@ -1,0 +1,24 @@
+/* inject/overlay.css */
+#misinfo-overlay-card {
+  position: fixed;
+  right: 20px;
+  bottom: 90px;
+  z-index: 2147483647;
+  max-width: 360px;
+  font-family: Inter, Roboto, Arial, sans-serif;
+}
+.misinfo-card {
+  background: #ffffff;
+  border: 1px solid rgba(13, 26, 38, 0.08);
+  box-shadow: 0 6px 20px rgba(12, 36, 60, 0.08);
+  border-radius: 10px;
+  padding: 12px;
+}
+.misinfo-badge { display:inline-block; padding:4px 8px; border-radius:6px; font-weight:600; font-size:12px; margin-bottom:8px; }
+.misinfo-badge.false { background:#fdecea; color:#b30f0f; }
+.misinfo-badge.true { background:#e8f6ee; color:#0b7a3f; }
+.misinfo-badge.unverified { background:#f0f3f5; color:#333; }
+.misinfo-claim { font-size:13px; margin-bottom:6px; font-weight:600; }
+.misinfo-reason { font-size:12px; color:#465a6a; margin-bottom:8px; }
+.misinfo-actions { display:flex; gap:8px; }
+.misinfo-actions button { background:#0e2a47; color:white; border:none; padding:6px 10px; border-radius:8px; cursor:pointer; font-size:12px; }
