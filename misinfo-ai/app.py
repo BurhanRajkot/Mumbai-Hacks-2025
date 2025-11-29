@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -7,23 +10,27 @@ from agents.bias_agent import analyze_bias
 from agents.summary_agent import summarize
 from agents.final_judge import final_verdict
 
+# Flask App ---------------------------------------------
 app = Flask(__name__)
+CORS(app)  # Allow Chrome extension + HTML frontend
 
-# Enable CORS AFTER app is created
-CORS(app)
 
+# API Route ----------------------------------------------
 @app.post("/check")
 def check():
     data = request.json
     text = data.get("text", "")
     url = data.get("url", "")
 
-    # Run agents
+    print("REQUEST RECEIVED:", text)
+
+    # Run all agents
     fact_data = fact_check(text)
     news_data = news_check(text)
     bias_data = analyze_bias(text)
     summary = summarize(text)
 
+    # Supervisor agent
     verdict = final_verdict(
         text=text,
         fact_data=fact_data,
@@ -34,6 +41,14 @@ def check():
 
     return jsonify(verdict)
 
-# Important: run on 0.0.0.0 for browser testing
+
+# Optional health check route -----------------------------
+@app.get("/")
+def home():
+    return {"status": "OK", "message": "Misinfo AI Backend Running"}
+
+
+# Run Server ----------------------------------------------
 if __name__ == "__main__":
+    # 0.0.0.0 = accessible from Chrome extension
     app.run(host="0.0.0.0", port=5000, debug=True)
