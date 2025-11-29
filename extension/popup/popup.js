@@ -1,49 +1,81 @@
-document.getElementById('analyze').addEventListener('click', async () => {
-  const output = document.getElementById('output')
-  const verdictBadge = document.getElementById('verdictBadge')
-  const confidenceText = document.getElementById('confidence')
-  const resultBox = document.getElementById('resultBox')
-  const loading = document.getElementById('loading')
+const chatArea = document.getElementById('chatArea')
+const sendBtn = document.getElementById('sendBtn')
+const input = document.getElementById('inputText')
+const loading = document.getElementById('loading')
 
-  const textareaValue = document.getElementById('inputText').value
+// Add message bubble
+function addMessage(text, type = 'bot', verdict = null, confidence = null) {
+  const msg = document.createElement('div')
+  msg.classList.add('message', type === 'user' ? 'user-msg' : 'bot-msg')
 
+  if (verdict) {
+    const badge = document.createElement('span')
+    badge.textContent = verdict
+    badge.classList.add('inner-badge', verdict)
+    msg.appendChild(badge)
+    msg.appendChild(document.createElement('br'))
+
+    if (confidence) {
+      const conf = document.createElement('small')
+      conf.textContent = `Confidence: ${(confidence * 100).toFixed(1)}%`
+      msg.appendChild(conf)
+      msg.appendChild(document.createElement('br'))
+      msg.appendChild(document.createElement('br'))
+    }
+  }
+
+  msg.append(text)
+  chatArea.appendChild(msg)
+  chatArea.scrollTop = chatArea.scrollHeight
+}
+
+sendBtn.addEventListener('click', sendMessage)
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault()
+    sendMessage()
+  }
+})
+
+async function sendMessage() {
+  const text = input.value.trim()
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-  const pageURL = tab.url
 
-  const textToSend = textareaValue.trim() || pageURL
+  let payload = {}
 
-  // Reset UI
-  resultBox.classList.add('hidden')
-  output.textContent = ''
+  // Decide mode
+  if (text.length > 0) {
+    payload = { mode: 'text', text }
+    addMessage(text, 'user') // add user bubble
+  } else {
+    payload = { mode: 'page', url: tab.url }
+    addMessage('Analyzing full page...', 'user')
+  }
+
+  input.value = ''
   loading.classList.remove('hidden')
 
   try {
     const res = await fetch('http://localhost:5000/check', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: textToSend }),
+      body: JSON.stringify(payload),
     })
 
     const data = await res.json()
-
     loading.classList.add('hidden')
-    resultBox.classList.remove('hidden')
 
-    output.textContent = JSON.stringify(data, null, 2)
+    // Extract final output message
+    const textOut = JSON.stringify(data, null, 2)
 
-    // Badge style
-    verdictBadge.textContent = data.verdict || 'Unknown'
-    verdictBadge.className = 'badge ' + (data.verdict || '')
-
-    // Confidence
-    if (data.confidence)
-      confidenceText.textContent = `Confidence: ${(
-        data.confidence * 100
-      ).toFixed(1)}%`
-    else confidenceText.textContent = ''
+    addMessage(
+      textOut,
+      'bot',
+      data.verdict || 'Unverified',
+      data.confidence || null
+    )
   } catch (err) {
     loading.classList.add('hidden')
-    resultBox.classList.remove('hidden')
-    output.textContent = 'Error: ' + err
+    addMessage('❌ Error: ' + err.message, 'bot')
   }
-})
+}

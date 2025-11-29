@@ -128,6 +128,51 @@ button:hover {
   animation: slideUp 0.5s ease;
 }
 
+/* Chat area */
+.chat-area {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  height: 340px;
+  padding: 10px;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 12px;
+}
+
+/* Message bubbles */
+.message {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  max-width: 85%;
+  border-radius: 12px;
+  font-size: 14px;
+  white-space: pre-wrap;
+  line-height: 1.4;
+}
+
+.user-msg {
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.bot-msg {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  align-self: flex-start;
+  margin-right: auto;
+}
+
+/* Verdict badge inside bubble */
+.inner-badge {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -9,46 +9,88 @@ from agents.news_agent import news_check
 from agents.bias_agent import analyze_bias
 from agents.summary_agent import summarize
 from agents.final_judge import final_verdict
+from agents.headline_agent import extract_headlines
 
 # Flask App ---------------------------------------------
 app = Flask(__name__)
 CORS(app)  # Allow Chrome extension + HTML frontend
 
 
+# Handlers ----------------------------------------------
+
+def handle_text_mode(text):
+    """Fast, safe text-only analysis."""
+    summary = summarize(text)
+    fact_data = fact_check(text)
+    bias = analyze_bias(text)
+
+    verdict = final_verdict(
+        text=text,
+        fact_data=fact_data,
+        news_data={},   # Skip slow news API here
+        bias_data=bias,
+        summary=summary
+    )
+    return verdict
+
+
+def handle_page_mode(url):
+    """Extract headlines and analyze each."""
+    headlines = extract_headlines(url)
+    results = []
+
+    for h in headlines:
+        summary = summarize(h)
+        fact_data = fact_check(h)
+        bias = analyze_bias(h)
+
+        verdict = final_verdict(
+            text=h,
+            fact_data=fact_data,
+            news_data={},
+            bias_data=bias,
+            summary=summary
+        )
+
+        results.append({
+            "headline": h,
+            "verdict": verdict.get("verdict"),
+            "confidence": verdict.get("confidence"),
+            "summary": verdict.get("safe_summary")
+        })
+
+    return {
+        "url": url,
+        "headline_count": len(headlines),
+        "results": results
+    }
+
+
 # API Route ----------------------------------------------
 @app.post("/check")
 def check():
     data = request.json
-    text = data.get("text", "")
-    url = data.get("url", "")
+    mode = data.get("mode")
 
-    print("REQUEST RECEIVED:", text)
+    if mode == "text":
+        text = data.get("text", "")
+        print("TEXT MODE REQUEST:", text)
+        return jsonify(handle_text_mode(text))
 
-    # Run all agents
-    fact_data = fact_check(text)
-    news_data = news_check(text)
-    bias_data = analyze_bias(text)
-    summary = summarize(text)
+    if mode == "page":
+        url = data.get("url", "")
+        print("PAGE MODE REQUEST:", url)
+        return jsonify(handle_page_mode(url))
 
-    # Supervisor agent
-    verdict = final_verdict(
-        text=text,
-        fact_data=fact_data,
-        news_data=news_data,
-        bias_data=bias_data,
-        summary=summary
-    )
-
-    return jsonify(verdict)
+    return jsonify({"error": "Invalid mode"}), 400
 
 
-# Optional health check route -----------------------------
+# Optional health check ---------------------------------
 @app.get("/")
 def home():
     return {"status": "OK", "message": "Misinfo AI Backend Running"}
 
 
-# Run Server ----------------------------------------------
+# Run Server ---------------------------------------------
 if __name__ == "__main__":
-    # 0.0.0.0 = accessible from Chrome extension
     app.run(host="0.0.0.0", port=5000, debug=True)

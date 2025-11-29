@@ -6,29 +6,25 @@
     <title>Misinfo Detector</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
+
   <body>
     <div class="container fade-in">
       <h2 class="title">🛡️ Misinfo Detector</h2>
 
-      <textarea
-        id="inputText"
-        placeholder="Enter text or leave empty to analyze the page"
-      ></textarea>
+      <div id="chatArea" class="chat-area"></div>
 
-      <button id="analyze">Analyze</button>
+      <div class="input-section">
+        <textarea
+          id="inputText"
+          placeholder="Write a claim or leave empty to analyze current page..."
+        ></textarea>
+
+        <button id="sendBtn">Send</button>
+      </div>
 
       <div id="loading" class="loading hidden">
         <div class="spinner"></div>
         <p>Analyzing...</p>
-      </div>
-
-      <div id="resultBox" class="result-box hidden slide-up">
-        <div class="header">
-          <span id="verdictBadge" class="badge">Verdict</span>
-          <span id="confidence" class="confidence"></span>
-        </div>
-
-        <pre id="output"></pre>
       </div>
     </div>
 
