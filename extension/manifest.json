@@ -1,35 +1,25 @@
 {
   "manifest_version": 3,
-  "name": "Crisis Misinformation Checker",
-  "version": "0.1.0",
-  "description": "Scan news pages and detect likely misinformation (hackathon MVP).",
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
-  "permissions": [
-    "activeTab",
-    "scripting",
-    "storage"
-  ],
+  "name": "Misinfo Detector",
+  "version": "1.0",
+  "description": "Detect misinformation on any webpage using your AI backend.",
+  "permissions": ["activeTab", "scripting", "tabs"],
   "host_permissions": [
-    "<all_urls>"
+    "http://localhost:5000/*",
+    "http://127.0.0.1:5000/*",
+    "http://0.0.0.0:5000/*"
   ],
-  "background": {
-    "service_worker": "background/background.js"
-  },
+
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
-      "16": "icons/icon16.png"
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content/content.js"],
-      "run_at": "document_idle"
-    }
-  ]
+
+  "background": {
+    "service_worker": "background/background.js"
+  }
 }

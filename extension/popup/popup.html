@@ -1,20 +1,37 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <link rel="stylesheet" href="popup/popup.css" />
-</head>
-<body>
-  <div class="container">
-    <h3>Crisis Misinformation Checker</h3>
-    <div class="buttons">
-      <button id="scanPage">Scan This Page</button>
-      <button id="checkSelection">Check Selection</button>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Misinfo Detector</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container fade-in">
+      <h2 class="title">🛡️ Misinfo Detector</h2>
+
+      <textarea
+        id="inputText"
+        placeholder="Enter text or leave empty to analyze the page"
+      ></textarea>
+
+      <button id="analyze">Analyze</button>
+
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Analyzing...</p>
+      </div>
+
+      <div id="resultBox" class="result-box hidden slide-up">
+        <div class="header">
+          <span id="verdictBadge" class="badge">Verdict</span>
+          <span id="confidence" class="confidence"></span>
+        </div>
+
+        <pre id="output"></pre>
+      </div>
     </div>
-    <div id="status"></div>
-    <div id="results"></div>
-    <small class="footer">Powered by Agentic AI • Hackathon MVP</small>
-  </div>
-  <script src="popup/popup.js"></script>
-</body>
+
+    <script src="popup.js"></script>
+  </body>
 </html>
