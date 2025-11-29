@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Misinfo Tester</title>
+  </head>
+  <body>
+    <h2>Misinformation Detection Tester</h2>
+
+    <textarea
+      id="inputText"
+      rows="6"
+      cols="60"
+      placeholder="Enter text to analyze..."
+    ></textarea>
+    <br /><br />
+
+    <button onclick="sendRequest()">Analyze</button>
+
+    <h3>Response:</h3>
+    <pre id="output"></pre>
+
+    <script>
+      async function sendRequest() {
+        const text = document.getElementById('inputText').value
+
+        const res = await fetch('http://127.0.0.1:5000/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text }),
+        })
+
+        const data = await res.json()
+        document.getElementById('output').innerText = JSON.stringify(
+          data,
+          null,
+          2
+        )
+      }
+    </script>
+  </body>
+</html>
